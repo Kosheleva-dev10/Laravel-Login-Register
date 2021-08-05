@@ -27,11 +27,16 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function register(Request $request)
     {
         $user = User::create([
             'email' => $request['email'],
-            'password' => Hash::make($request['password']),
+            'password' => $request['password'],
+            'address' => $request['address'],
+            'address2' => $request['address2'],
+            'city' => $request['city'],
+            'state' => $request['state'],
+            'zip' => $request['zip'],
         ]);
         
         if ($user) {
@@ -41,24 +46,21 @@ class UsersController extends Controller
         }
     }
 
-    public function username()
+    public function login(Request $request)
     {
-        return 'username';
-    }
+        $user = User::where('email', '=', $request['email'])->first();
+        
+        if (!$user) {
+            return redirect('register');
+            exit();
+        }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(UsersRequest $request)
-    {
-        $newUser = new CreateNewUser();
-        // $user = $newUser->create($request->only(['name', 'email', 'password']));
-        $user = $newUser->create($request->only(['name', 'email', 'password', 'address', 'address2', 'city', 'state', 'zip']));
-        $user->roles()->sync($request->roles);
-        // return redirect()->route('users.index');
+        if (md5($request['password']) == $user->password) {
+            return redirect('/dashboard');
+            
+        } else {
+            return redirect('register');
+        }
     }
 
     /**

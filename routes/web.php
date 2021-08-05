@@ -14,18 +14,13 @@ use App\Http\Controllers\UsersController;
 */
 
 Route::get('/', function () {
-    return view('auth/login');
+    return view('welcome');
 });
 
-Route::post('/login', [UsersController::class], 'check');
+Route::post('/login', ['as'=>'login', 'uses'=>'App\Http\Controllers\UsersController@login']);
+Route::post('/register', [UsersController::class, 'register']);
 
-Route::post('/register', [UsersController::class, 'create']);
-
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
+Route::get('/dashboard', function () {
     return view('dashboard');
-})->name('dashboard');
-Route::middleware(['auth', 'auth.isAdmin'])->group(function(){
-    Route::resource('tasks', TaskController::class);
-    Route::resource('users', UsersController::class);
 });
 

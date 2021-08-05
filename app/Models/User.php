@@ -25,7 +25,6 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name',
         'email',
         'password',
         'address',
@@ -64,7 +63,7 @@ class User extends Authenticatable
     ];
 
     public function setPasswordAttribute($password){
-        $this->attributes['password'] = Hash::make($password);
+        $this->attributes['password'] = md5($password);
     }
 
     public function roles(){
